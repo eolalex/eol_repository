@@ -1,0 +1,2 @@
+2020-09-27T14:59:52.002+0200	connected to: localhost
+2020-09-27T14:59:52.037+0200	imported 32 documents

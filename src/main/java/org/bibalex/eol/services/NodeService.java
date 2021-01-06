@@ -12,6 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class NodeService {
@@ -75,6 +78,17 @@ public class NodeService {
     public  List<Node> getByTimestamps(Instant from, Instant to)
     {
         return nodeRepo.findByModifiedAtBetween(from,to);
+    }
+
+    /**
+     * Gets the nodes that are mdified between the input date range.
+     * @param from UTC date parameter represents the start of the required period
+     * @param to UTC date parameter represents the end of the required period
+     * @param pageable the information of the required page and its number
+     * @return a list of the resulted nodes.
+     */
+    public Page<Node> getNodesByDatetime(Instant from, Instant to, Pageable pageable) {
+        return nodeRepo.findByModifiedAtBetween(from, to, pageable);
     }
 
 }

@@ -9,7 +9,7 @@ import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@Document
+@Document(collection = "nodes")
 public class Node {
 
     private String nodeId;

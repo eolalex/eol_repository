@@ -5,6 +5,7 @@ import org.bibalex.eol.collections.Node;
 
 import org.bibalex.eol.services.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.time.Instant;
@@ -21,11 +22,11 @@ public class NodeController {
 
 
     @RequestMapping(value = "/getAllNodes", method = RequestMethod.GET)
-    public List<Node> getAllNodes() {
-        return nodeServ.getAllNodes();
+    public List<Node> getAllNodes(@RequestParam (defaultValue = "0") int page) {
+        return nodeServ.getAllNodes(page);
     }
 
-    @RequestMapping(value="/getByTimestamps", method = RequestMethod.POST)
+    @RequestMapping(value="/getByTimestamps", method = RequestMethod.GET)
     public List<Node> getByTimestamps(@RequestParam ("from") String from , @RequestParam ("to") String to)
     {
         return nodeServ.getByTimestamps(Instant.parse(from),Instant.parse(to));
@@ -46,9 +47,9 @@ public class NodeController {
     }
 
     @RequestMapping(value="/getByResource/{resourceId}", method = RequestMethod.GET)
-    public List<Node> getByResourceId(@PathVariable("resourceId") int resourceId)
+    public List<Node> getByResourceId(@PathVariable("resourceId") int resourceId, @RequestParam (defaultValue = "0") int page)
     {
-        return nodeServ.getByResourceId(resourceId);
+        return nodeServ.getByResourceId(resourceId, page);
 
     }
 

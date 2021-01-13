@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 
 
+
 @Service
 public class NodeService {
 
@@ -98,9 +99,20 @@ public class NodeService {
         return nodeRepo.countVernaculars();
     }
 
-    public  List<Node> getByTimestamps(Instant from, Instant to)
+    /**
+     * Gets the nodes that are mdified between the input date range.
+     * @param from UTC date parameter represents the start of the required period
+     * @param to UTC date parameter represents the end of the required period
+     * @param page number of the request
+     * @return a list of the resulted nodes.
+     */
+    public  List<Node> getByModifiedAt(Instant from, Instant to, int page)
     {
-        return nodeRepo.findByModifiedAtBetween(from,to);
+        Pageable paging = createNodesPage(page);
+        Page<Node> nodesPage = nodeRepo.findByModifiedAtBetween(from,to,paging);
+        return nodesPage.getContent();
     }
+
+
 
 }

@@ -53,23 +53,8 @@ public class NodeService {
         return nodeRepo.save(node);
     }
 
-    public void insertNodes (List<Node> nodes) throws IOException
-    {
-        //addModifiedAt(nodes);
-        addModifiedAt(nodes);
+    public void insertNodes (List<Node> nodes) throws IOException {
         nodeRepo.insert(nodes);
-//        ObjectMapper mapper = new ObjectMapper();
-//        File nodes_file = new File("nodes.json");
-//        FileWriter fileWriter = new FileWriter(nodes_file, true);
-//       // mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        mapper.writeValue(nodes_file, nodes);
-//        // default attributes like modified_at have to be assigned.
-//        // check coming json array if its size + the size of the existing file will exceed the linit (16MB)
-//        // then mongo import first then write the coming records. otherwise simple write in file.
-//        ProcessBuilder pb = new ProcessBuilder("/home/ba/eol_repository/nodesInsertion.sh", "test", "node", "nodes.json");
-//        File errorFile = new File("PingErrLog.txt");
-//        pb.redirectError(errorFile);
-//        pb.start();
     }
 
     private void addModifiedAt(List<Node> nodes)

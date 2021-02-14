@@ -45,7 +45,7 @@ public class NodeService {
 
     private Pageable createNodesPage(int page)
     {
-        return new PageRequest(page, apiConfiguration.getNodesBatchSize());
+        return PageRequest.of(page, apiConfiguration.getNodesBatchSize());
     }
 
     public Node createNode(Node node)
@@ -54,7 +54,7 @@ public class NodeService {
     }
 
     public void insertNodes (List<Node> nodes) throws IOException {
-        nodeRepo.insert(nodes);
+        nodeRepo.saveAll(nodes);
     }
 
     private void addModifiedAt(List<Node> nodes)

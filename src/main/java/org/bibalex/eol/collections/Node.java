@@ -22,6 +22,7 @@ public class Node {
     private Integer pageId;
     private String acceptedNameUsageId;
     private String rank;
+    // _id in mongodb maps to generatedNodeId in Neo4j
     @Id private String _id;
     private String canonicalName;
     private String scientificName;

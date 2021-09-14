@@ -3,10 +3,7 @@ package org.bibalex.eol.controllers;
 import org.bibalex.eol.collections.Medium;
 import org.bibalex.eol.services.MediumService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,10 +17,10 @@ public class MediumController {
 
     //TODO: Versioning , pagination
     @RequestMapping(value="/getByResource/{resourceId}", method = RequestMethod.GET)
-    public List<Medium> getByResourceId(@PathVariable("resourceId")int resourceId)
+    public List<Medium> getByResourceId(@PathVariable("resourceId")int resourceId, @RequestParam (defaultValue = "0") int page)
     {
 
-        return mediumServ.getByResourceId(resourceId);
+        return mediumServ.getByResourceId(resourceId, page);
     }
 
     @RequestMapping(value="/getByResourceAndPk/{resourceId}/{mediumId}", method = RequestMethod.GET)
@@ -33,7 +30,7 @@ public class MediumController {
     }
 
     @RequestMapping(value="/insert", method = RequestMethod.POST, consumes = "application/json" )
-    public void insertMedia(List<Medium> media)
+    public void insertMedia(@RequestBody List<Medium> media)
     {
           //TODO
            mediumServ.insertMedia(media);

@@ -4,10 +4,7 @@ package org.bibalex.eol.controllers;
 import org.bibalex.eol.collections.Article;
 import org.bibalex.eol.services.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,10 +17,10 @@ public class ArticleController {
 
     //TODO: Versioning , pagination
     @RequestMapping(value="/getByResource/{resourceId}", method = RequestMethod.GET)
-    public List<Article> getByResourceId(@PathVariable("resourceId")int resourceId)
+    public List<Article> getByResourceId(@PathVariable("resourceId")int resourceId, @RequestParam (defaultValue = "0") int page)
     {
 
-        return articleServ.getByResourceId(resourceId);
+        return articleServ.getByResourceId(resourceId, page);
     }
 
     @RequestMapping(value="/getByResourceAndPk/{resourceId}/{articleId}", method = RequestMethod.GET)
@@ -33,10 +30,9 @@ public class ArticleController {
     }
 
     @RequestMapping(value="/insert", method = RequestMethod.POST, consumes = "application/json")
-    public void insertMedia(List<Article> media)
+    public void insertArticles(@RequestBody List<Article> articles)
     {
-          //TODO
-           articleServ.insertArticles(media);
+          articleServ.insertArticles(articles);
     }
 
     @RequestMapping(value="/count", method = RequestMethod.GET)

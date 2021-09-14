@@ -7,6 +7,7 @@ import org.bibalex.eol.collections.Node;
 import org.bibalex.eol.handler.APIConfiguration;
 import org.bibalex.eol.repositories.NodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.io.File;
@@ -29,19 +30,14 @@ public class NodeService {
     @Autowired
     APIConfiguration apiConfiguration;
 
-    public List<Node> getAllNodes(int page)
+    public Page<Node> getAllNodes(int page)
     {
         Pageable paging = createNodesPage(page);
         Page<Node> nodesPage = nodeRepo.findAll(paging);
-        return nodesPage.getContent();
+        return nodesPage;
     }
 
-    public List<Node> getByResourceId( int resourceId, int page)
-    {
-        Pageable paging = createNodesPage(page);
-        Page<Node> nodesPage = nodeRepo.findByresourceId(resourceId, paging);
-        return nodesPage.getContent();
-    }
+
 
     private Pageable createNodesPage(int page)
     {
@@ -53,11 +49,11 @@ public class NodeService {
         return nodeRepo.save(node);
     }
 
-    public void insertNodes (List<Node> nodes) throws IOException
+    public List<Node> insertNodes (List<Node> nodes) throws IOException
     {
         //addModifiedAt(nodes);
         addModifiedAt(nodes);
-        nodeRepo.insert(nodes);
+        return nodeRepo.insert(nodes);
 //        ObjectMapper mapper = new ObjectMapper();
 //        File nodes_file = new File("nodes.json");
 //        FileWriter fileWriter = new FileWriter(nodes_file, true);
@@ -89,11 +85,17 @@ public class NodeService {
         return nodeRepo.findByResourceIdAndNodeId(resourceId, nodeId);
     }
 
+    public Node getByGeneratedNodeId(int generatedNodeId)
+    {
+        return nodeRepo.findBy_id(generatedNodeId+"");
+    }
+
     public long countNodes()
     {
         return nodeRepo.countByAcceptedNameUsageId(null);
     }
 
+    //@Cacheable(value = "eol", key = "#vernaculars_count")
     public String countVernaculars()
     {
         return nodeRepo.countVernaculars();
@@ -106,11 +108,10 @@ public class NodeService {
      * @param page number of the request
      * @return a list of the resulted nodes.
      */
-    public  List<Node> getByModifiedAt(Instant from, Instant to, int page)
+    public  Page<Node> getByModifiedAt(Instant from, Instant to, int page)
     {
         Pageable paging = createNodesPage(page);
-        Page<Node> nodesPage = nodeRepo.findByModifiedAtBetween(from,to,paging);
-        return nodesPage.getContent();
+        return nodeRepo.findByModifiedAtBetween(from,to,paging);
     }
 
 

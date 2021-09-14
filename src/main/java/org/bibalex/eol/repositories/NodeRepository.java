@@ -12,6 +12,7 @@ public interface NodeRepository extends MongoRepository<Node, String>,NodeReposi
 
     Page<Node> findByresourceId(int resourceId, Pageable pageable);
     Node findByResourceIdAndNodeId(int resourceId, String nodeId);
+    Node findBy_id(String generatedNodeId);
     Long countByAcceptedNameUsageId(String acceptedNameUsageId);
     String countVernaculars();
 

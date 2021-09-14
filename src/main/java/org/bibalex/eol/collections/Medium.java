@@ -16,11 +16,11 @@ public class Medium {
 
     //TODO: Still have to add agents and location under discussion
     //todo : specify primary key
-    public String getMediaId() {
+    public String getMediumId() {
         return mediumId;
     }
 
-    public void setMediaId(String mediumId) {
+    public void setMediumId(String mediumId) {
         this.mediumId = mediumId;
     }
 

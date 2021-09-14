@@ -1,6 +1,7 @@
 package org.bibalex.eol.repositories;
 
 import com.mongodb.BasicDBObject;
+import org.bibalex.eol.aggregation_objects.VernacularCount;
 import org.bibalex.eol.collections.Node;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;

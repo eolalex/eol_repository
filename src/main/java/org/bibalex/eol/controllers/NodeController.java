@@ -4,6 +4,7 @@ package org.bibalex.eol.controllers;
 import org.bibalex.eol.collections.Node;
 import org.bibalex.eol.services.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -28,15 +29,29 @@ public class NodeController {
     @Autowired
     private NodeService nodeServ;
 
-    @RequestMapping(value = "/getAllNodes", method = RequestMethod.GET)
-    public List<Node> getAllNodes(@RequestParam (defaultValue = "0") int page) {
-        return nodeServ.getAllNodes(page);
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResponseEntity getAllNodes(@RequestParam (defaultValue = "0") int page) {
+        Page<Node> nodesPage = nodeServ.getAllNodes(page);
+        List<Node> nodes = nodesPage.getContent();
+        Map<String, Object> response = new HashMap<>();
+        response.put("nodes", nodes);
+        response.put("currentPage", nodesPage.getNumber());
+        response.put("totalItems", nodesPage.getTotalElements());
+        response.put("totalPages", nodesPage.getTotalPages());
+        return ResponseEntity.ok(response);
     }
 
     @RequestMapping(value="/getByModifiedAt", method = RequestMethod.GET)
-    public List<Node> getByModifiedAt(@RequestParam ("from") String from , @RequestParam ("to") String to, @RequestParam (defaultValue = "0") int page)
+    public ResponseEntity getByModifiedAt(@RequestParam ("from") String from , @RequestParam ("to") String to, @RequestParam (defaultValue = "0") int page)
     {
-        return nodeServ.getByModifiedAt(Instant.parse(from), Instant.parse(to),page);
+        Page<Node> nodesPage = nodeServ.getByModifiedAt(Instant.parse(from), Instant.parse(to),page);
+        List<Node> nodes = nodesPage.getContent();
+        Map<String, Object> response = new HashMap<>();
+        response.put("nodes", nodes);
+        response.put("currentPage", nodesPage.getNumber());
+        response.put("totalItems", nodesPage.getTotalElements());
+        response.put("totalPages", nodesPage.getTotalPages());
+        return ResponseEntity.ok(response);
     }
 
 
@@ -77,45 +92,59 @@ public class NodeController {
         return nodeServ.createNode(node)== null;
     }
 
-    @RequestMapping(value= "/insert", method = RequestMethod.POST, consumes = "application/json")
-    public void insertNodes (@RequestBody List<Node> nodes) throws IOException
+    @RequestMapping(value= "", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity insertNodes (@RequestBody List<Node> nodes) throws IOException
     {
         //TODO: security issues (authentication)
-        nodeServ.insertNodes(nodes);
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(nodeServ.insertNodes(nodes));
     }
 
-    @RequestMapping(value="/getByResource/{resourceId}", method = RequestMethod.GET)
-    public List<Node> getByResourceId(@PathVariable("resourceId") int resourceId, @RequestParam (defaultValue = "0") int page)
+
+
+    @RequestMapping(value="/scientificNamesCount", method = RequestMethod.GET)
+    public ResponseEntity countScientificNames()
     {
-        return nodeServ.getByResourceId(resourceId, page);
-
-    }
-
-    @RequestMapping(value="/countScientific", method = RequestMethod.GET)
-    public long countScientificNames()
-    {
-        return nodeServ.countScientificNames();
-
+        long scientificNamesCount = nodeServ.countScientificNames();
+        HashMap<String,Long> result= new HashMap<String,Long>();
+        result.put("scientificNamesCount",scientificNamesCount);
+        return ResponseEntity.ok(result);
     }
 //
     @RequestMapping(value="/getByResourceAndPk/{resourceId}/{nodeId}", method = RequestMethod.GET)
-    public Node findByResourceAndNode(@PathVariable("resourceId") int resourceId, @PathVariable("nodeId") String nodeId)
+    public ResponseEntity findByResourceAndNode(@PathVariable("resourceId") int resourceId, @PathVariable("nodeId") String nodeId)
     {
-        return nodeServ.getByResourceAndPk(resourceId, nodeId);
+        Node requestedNode = nodeServ.getByResourceAndPk(resourceId, nodeId);
+        if(requestedNode == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(requestedNode);
+    }
+
+    @RequestMapping(value="/{generatedNodeId}", method = RequestMethod.GET)
+    public ResponseEntity findByGeneratedNodeId(@PathVariable("generatedNodeId") int generatedNodeId)
+    {
+        Node requestedNode = nodeServ.getByGeneratedNodeId(generatedNodeId);
+        if(requestedNode == null)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(requestedNode);
     }
 
     // Nodes are taxa which are not synonms
-    @RequestMapping(value="/countNodes", method = RequestMethod.GET)
-    public long countNodes()
+    @RequestMapping(value="/nodesCount", method = RequestMethod.GET)
+    public ResponseEntity countNodes()
     {
-        return nodeServ.countNodes();
+        long nodesCount = nodeServ.countNodes();
+        HashMap<String,Long> result= new HashMap<String,Long>();
+        result.put("nodesCount",nodesCount);
+        return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value="/countVernaculars", method = RequestMethod.GET )
-    public String countVernaculars()
+    @RequestMapping(value="/vernacularsCount", method = RequestMethod.GET )
+    public ResponseEntity countVernaculars()
     {
-        return nodeServ.countVernaculars();
+        String vernacularsCount = nodeServ.countVernaculars();
+        HashMap<String,String> result= new HashMap<String,String>();
+        result.put("vernacularsCount",vernacularsCount);
+        return ResponseEntity.ok(result);
     }
 
 

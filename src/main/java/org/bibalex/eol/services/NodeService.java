@@ -66,6 +66,7 @@ public class NodeService {
 //        File errorFile = new File("PingErrLog.txt");
 //        pb.redirectError(errorFile);
 //        pb.start();
+
     }
 
     private void addModifiedAt(List<Node> nodes)
